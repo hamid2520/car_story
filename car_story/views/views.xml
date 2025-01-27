@@ -1,0 +1,67 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="car_story_list_view">
+      <field name="name">car.story.list</field>
+      <field name="model">car.story</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="owner_name"/>
+          <field name="make"/>
+          <field name="color"/>
+          <field name="year"/>
+          <field name="mileage"/>
+          <field name="reached_company"/>
+        </list>
+      </field>
+    </record>
+    <record id="view_car_story_form" model="ir.ui.view">
+        <field name="name">car.story.form</field>
+        <field name="model">car.story</field>
+        <field name="arch" type="xml">
+            <form string="Car Story">
+                <sheet>
+                    <group>
+                        <field name="owner_name"/>
+                        <field name="color"/>
+                        <field name="make"/>
+                        <field name="vin"/>
+                        <field name="mileage"/>
+                        <field name="year"/>
+                        <field name="reached_company"/>
+                        <field name="out_of_pocket"/>
+                    </group>
+                    <group>
+                        <field name="story"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="car_story.action_window">
+      <field name="name">car_story window</field>
+      <field name="res_model">car.story</field>
+      <field name="view_mode">list,form</field>
+    </record>
+    <record model="ir.actions.server" id="car_story.action_server">
+      <field name="name">car_story server</field>
+      <field name="model_id" ref="model_car_story"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+
+    <menuitem name="car_story" id="car_story.menu_root"/>
+    <menuitem name="Menu 1" id="car_story.menu_1" parent="car_story.menu_root"/>
+    <menuitem name="Menu 2" id="car_story.menu_2" parent="car_story.menu_root"/>
+    <menuitem name="List" id="car_story.menu_1_list" parent="car_story.menu_1"
+              action="car_story.action_window"/>
+    <menuitem name="Server to list" id="car_story" parent="car_story.menu_2"
+              action="car_story.action_server"/>
+
+  </data>
+</odoo>

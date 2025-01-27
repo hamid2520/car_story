@@ -1,0 +1,209 @@
+<odoo>
+    <template id="car_story_template" name="Car Story Form">
+          <style>
+            /* Minimal Form Styling */
+            .car_container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f9f9f9;
+                border-radius: 8px;
+            }
+
+            .car_heading {
+                font-size: 28px;
+                font-weight: bold;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            .car_form {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .car_row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .car_col, .car_full_col {
+                flex: 1;
+                min-width: 250px;
+            }
+
+            .car_label {
+                font-size: 14px;
+                font-weight: 500;
+                margin-bottom: 8px;
+                display: block;
+                color: #333;
+            }
+
+            .car_input, .car_input[type="file"], .car_input[type="textarea"] {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                box-sizing: border-box;
+                transition: border 0.3s;
+            }
+
+            .car_input:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+
+            .car_btn {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                padding: 12px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                border-radius: 4px;
+                width: 100%;
+                transition: background-color 0.3s;
+            }
+
+            .car_btn:hover {
+                background-color: #0056b3;
+            }
+
+            .car_image_preview {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .car_image_preview img {
+                max-width: 100px;
+                max-height: 100px;
+                border-radius: 5px;
+                object-fit: cover;
+            }
+
+            .car_full_col {
+                width: 100%;
+            }
+        </style>
+        <t t-call="website.layout">
+            <div class="car_container mt-5">
+                <h1 class="car_heading">Car Story Form</h1>
+                <form action="/car/story/submit" method="POST" enctype="multipart/form-data" class="car_form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+
+                    <div class="car_row">
+                        <div class="car_col">
+                            <label for="owner_name" class="car_label">Owner Name</label>
+                            <input type="text" name="owner_name" id="owner_name" class="car_input" />
+                        </div>
+                        <div class="car_col">
+                            <label for="color" class="car_label">Color</label>
+                            <select name="color" id="color" class="car_input">
+                                <t t-foreach="color_options.items()" t-as="color">
+                                    <option t-att-value="color[0]"><t t-esc="color[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="car_row">
+                        <div class="car_col">
+                            <label for="make" class="car_label">Make</label>
+                            <select name="make" id="make" class="car_input">
+                                <option value="">Select Make of Car</option>
+                                <t t-foreach="make_options.items()" t-as="make">
+                                    <option t-att-value="make[0]"><t t-esc="make[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="car_col">
+                            <label for="model" class="car_label">Model</label>
+                            <select name="model" id="model" class="car_input">
+                                <option value="" disabled="disabled" selected="selected">Select Model</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="car_row">
+                        <div class="car_col">
+                            <label for="vin" class="car_label">VIN</label>
+                            <input type="text" name="vin" id="vin" class="car_input"/>
+                        </div>
+                        <div class="car_col">
+                            <label for="mileage" class="car_label">Mileage</label>
+                            <input type="number" name="mileage" id="mileage" class="car_input"/>
+                        </div>
+                    </div>
+
+                    <div class="car_row">
+                        <div class="car_col">
+                            <label for="year" class="car_label">Year</label>
+                            <select name="year" id="year" class="car_input">
+                                <t t-foreach="year_options" t-as="year">
+                                    <option t-att-value="year"><t t-esc="year"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="car_col">
+                            <label for="image" class="car_label">Upload Images</label>
+                            <input type="file" name="image" id="image" class="car_input" multiple="multiple"/>
+                        </div>
+                    </div>
+
+                    <div class="car_row">
+                        <div class="car_full_col">
+                            <label for="story" class="car_label">Tell your story</label>
+                            <textarea name="story" id="story" class="car_input" ></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="car_btn">Submit</button>
+                </form>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const makeElement = document.getElementById('make');
+                    const modelElement = document.getElementById('model');
+
+                    const modelsByMake = {
+                        hyundai: ['Santa Fe', 'Elantra', 'Palisade', 'Sonata', 'Kona', 'Tucson', 'Accent', 'Ioniq', 'Other'],
+                        kia: ['Sorento', 'Niro', 'Sportage', 'EV6/EV9', 'Soul', 'Forte', 'K5']
+                    };
+
+                    makeElement.addEventListener('change', function () {
+                        const selectedMake = makeElement.value;
+                        const models = modelsByMake[selectedMake] || [];
+
+                        // Clear the model options
+                        modelElement.innerHTML = '<option value="">Select Model</option>';
+
+                        // Populate the new options
+                        models.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model.toLowerCase().replace(/ /g, '_');
+                            option.textContent = model;
+                            modelElement.appendChild(option);
+                        });
+                    });
+                });
+            </script>
+        </t>
+    </template>
+
+    <template id="car_story_thank_you_template" name="Car Story Thank You">
+        <t t-call="website.layout">
+            <div class="car_container mt-5">
+                <h1 class="car_heading">Thank You!</h1>
+                <p>Your car story has been successfully submitted.</p>
+                <a href="/" class="car_btn">Back to Home</a>
+            </div>
+        </t>
+    </template>
+</odoo>

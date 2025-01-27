@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="xtream_theme_snippets" inherit_id="website.snippets"
+              name="About Us">
+        <xpath expr="//snippets[@id='snippet_content']//t[@t-snippet][last()]" position="after">
+            <t t-snippet="car_story.s_new_story"/>
+        </xpath>
+    </template>
+</odoo>

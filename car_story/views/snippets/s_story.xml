@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="s_new_story" name="New Arrivals">
+        <section class="story">
+            <div class="container o_not_editable">
+                <div class="css_non_editable_mode_hidden">
+                    <div class="alert alert-info">
+                        <h4>Snippet will be displayed here... Please Save to view the snippet.</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+    <template id="new_story_dynamic" name="New Story">
+        <section class="body_section">
+            <section class="product">
+                <div class="container">
+                    <div class="main">
+                        
+                    </div>
+                    <div class="row story_section">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0">Recent Stories</h4>
+                            <span>Count of stories: <span t-esc="story_count"></span></span>
+                        </div>
+                        <t t-foreach="story_ids" t-as="story">
+                            <div class="col-12 story_column card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><span t-esc="story.owner_name" /></h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <span t-esc="story.create_date" />
+                                    </h6>
+                                </div>
+                                <div class="card-body d-flex">
+                                    <div class="car-details">
+                                        <p><strong>Model:</strong> <span t-esc="story.model" /></p>
+                                        <p><strong>Make:</strong> <span t-esc="story.make" /></p>
+                                        <p><strong>Color:</strong> <span t-esc="story.color" /></p>
+                                        <p><strong>Mileage:</strong> <span t-esc="story.mileage" /> km</p>
+                                    </div>
+                                    <div class="car-story">
+                                        <p><strong>Story:</strong></p>
+                                        <p><span t-esc="story.story" /></p>
+                                    </div>
+                                </div>
+                                <div class="card-footer yrow text-center">
+                                    <t t-foreach="story.image_ids" t-as="image">
+                                        <div class="image-container">
+                                            <img t-att-src="'/web/image/%s' % (image.id)" alt="Car Image" class="car-image img-responsive" />
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                        </t>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </template>
+</odoo>
